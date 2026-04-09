@@ -111,11 +111,11 @@ public:
     // Flip parameters if remainder/div
     if (SimpleIRParser::PERCENT == op_type ||
         SimpleIRParser::SLASH == op_type) {
-      cout << "\tmov\t" << operand_1 << ", %rbx" << endl;
-      cout << "\tmov\t" << operand_2 << ", %rax" << endl;
-    } else {
       cout << "\tmov\t" << operand_1 << ", %rax" << endl;
       cout << "\tmov\t" << operand_2 << ", %rbx" << endl;
+    } else {
+      cout << "\tmov\t" << operand_1 << ", %rbx" << endl;
+      cout << "\tmov\t" << operand_2 << ", %rax" << endl;
     }
 
     switch (op_type) {
