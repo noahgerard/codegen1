@@ -111,7 +111,7 @@ public:
 
     switch (op_type) {
     case SimpleIRParser::PLUS:
-      cout << "\tadd $rbx, %rax" << endl;
+      cout << "\tadd %rbx, %rax" << endl;
       break;
     }
 
