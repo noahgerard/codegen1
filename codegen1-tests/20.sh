@@ -25,11 +25,11 @@ n := 5
 fact := 1
 i := 1
 loop:
-if i > n goto end
+if i > n goto after
 fact := fact * i
 i := i + 1
 goto loop
-end:
+after:
 retval := call print_int fact # DO NOT CHANGE
 return 0 # DO NOT CHANGE
 end function # DO NOT CHANGE

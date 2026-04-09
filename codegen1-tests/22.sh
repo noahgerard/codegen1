@@ -26,11 +26,11 @@ exp := 5
 result := 1
 i := 0
 loop:
-if i >= exp goto end
+if i >= exp goto after
 result := result * base
 i := i + 1
 goto loop
-end:
+after:
 retval := call print_int result # DO NOT CHANGE
 return 0 # DO NOT CHANGE
 end function # DO NOT CHANGE
