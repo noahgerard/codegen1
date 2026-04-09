@@ -102,7 +102,22 @@ public:
          << endl;
   }
 
-  virtual void enterOperation(SimpleIRParser::OperationContext *ctx) override {}
+  virtual void enterOperation(SimpleIRParser::OperationContext *ctx) override {
+    auto op_type = ctx->operatorKind->getType();
+    string operand_1 = operand_to_string(ctx->operand1);
+    cout << "\tmov\t" << operand_1 << ", %rbx" << endl;
+    string operand_2 = operand_to_string(ctx->operand2);
+    cout << "\tmov\t" << operand_2 << ", %rax" << endl;
+
+    switch (op_type) {
+    case SimpleIRParser::PLUS:
+      cout << "\tadd $rbx, %rax" << endl;
+      break;
+    }
+
+    cout << "\tmov\t%rax, " << symtab[ctx->variable->getText()] << "(%rbp)"
+         << endl;
+  }
 
   virtual void enterCall(SimpleIRParser::CallContext *ctx) override {
     cout << "\tmov\t-72(%rbp), %rdi" << endl;
