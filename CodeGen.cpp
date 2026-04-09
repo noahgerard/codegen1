@@ -129,11 +129,10 @@ public:
       cout << "\tcdq" << endl;
       cout << "\tidiv %rbx" << endl;
 
-      // Move quotient to variable
-      cout << "\tmov\t%rbx, " << symtab[ctx->variable->getText()] << "(%rbp)"
+      // Move remainder to variable
+      cout << "\tmov\t%rdx, " << symtab[ctx->variable->getText()] << "(%rbp)"
            << endl;
       return;
-      break;
     }
 
     cout << "\tmov\t%rax, " << symtab[ctx->variable->getText()] << "(%rbp)"
