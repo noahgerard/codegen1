@@ -108,15 +108,8 @@ public:
     string operand_1 = operand_to_string(ctx->operand1);
     string operand_2 = operand_to_string(ctx->operand2);
 
-    // Flip parameters if remainder/div
-    if (SimpleIRParser::PERCENT == op_type ||
-        SimpleIRParser::SLASH == op_type) {
-      cout << "\tmov\t" << operand_1 << ", %rax" << endl;
-      cout << "\tmov\t" << operand_2 << ", %rbx" << endl;
-    } else {
-      cout << "\tmov\t" << operand_1 << ", %rbx" << endl;
-      cout << "\tmov\t" << operand_2 << ", %rax" << endl;
-    }
+    cout << "\tmov\t" << operand_1 << ", %rax" << endl;
+    cout << "\tmov\t" << operand_2 << ", %rbx" << endl;
 
     switch (op_type) {
     case SimpleIRParser::PLUS:
