@@ -25,10 +25,11 @@ a := 2
 b := 3
 result := 0
 if a = b goto set_one
-retval := call print_int result # DO NOT CHANGE
-return 0 # DO NOT CHANGE
+goto print
 set_one:
 result := 1
+goto print
+print:
 retval := call print_int result # DO NOT CHANGE
 return 0 # DO NOT CHANGE
 end function # DO NOT CHANGE
