@@ -104,14 +104,42 @@ public:
 
   virtual void enterOperation(SimpleIRParser::OperationContext *ctx) override {
     auto op_type = ctx->operatorKind->getType();
+
     string operand_1 = operand_to_string(ctx->operand1);
-    cout << "\tmov\t" << operand_1 << ", %rbx" << endl;
     string operand_2 = operand_to_string(ctx->operand2);
-    cout << "\tmov\t" << operand_2 << ", %rax" << endl;
+
+    // Flip parameters if remainder/div
+    if (SimpleIRParser::PERCENT == op_type ||
+        SimpleIRParser::SLASH == op_type) {
+      cout << "\tmov\t" << operand_1 << ", %rax" << endl;
+      cout << "\tmov\t" << operand_2 << ", %rbx" << endl;
+    } else {
+      cout << "\tmov\t" << operand_1 << ", %rbx" << endl;
+      cout << "\tmov\t" << operand_2 << ", %rax" << endl;
+    }
 
     switch (op_type) {
     case SimpleIRParser::PLUS:
       cout << "\tadd %rbx, %rax" << endl;
+      break;
+    case SimpleIRParser::MINUS:
+      cout << "\tsub %rbx, %rax" << endl;
+      break;
+    case SimpleIRParser::STAR:
+      cout << "\timul %rbx, %rax" << endl;
+      break;
+    case SimpleIRParser::SLASH:
+      cout << "\tcdq" << endl;
+      cout << "\tidiv %rbx" << endl;
+      break;
+    case SimpleIRParser::PERCENT:
+      cout << "\tcdq" << endl;
+      cout << "\tidiv %rbx" << endl;
+
+      // Move quotient to variable
+      cout << "\tmov\t%rbx, " << symtab[ctx->variable->getText()] << "(%rbp)"
+           << endl;
+      return;
       break;
     }
 
