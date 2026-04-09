@@ -146,12 +146,18 @@ public:
     cout << "\tmov\t%rax, -80(%rbp)" << endl;
   }
 
-  virtual void enterLabel(SimpleIRParser::LabelContext *ctx) override {}
+  virtual void enterLabel(SimpleIRParser::LabelContext *ctx) override {
+    cout << ctx->labelName->getText() << ":" << endl;
+  }
 
   virtual void
-  enterGotoStatement(SimpleIRParser::GotoStatementContext *ctx) override {}
+  enterGotoStatement(SimpleIRParser::GotoStatementContext *ctx) override {
+    cout << "\tjmp\t" << ctx->labelName->getText() << endl;
+  }
 
-  virtual void enterIfGoto(SimpleIRParser::IfGotoContext *ctx) override {}
+  virtual void enterIfGoto(SimpleIRParser::IfGotoContext *ctx) override {
+    // TODO:
+  }
 
   virtual void
   enterDereference(SimpleIRParser::DereferenceContext *ctx) override {}
