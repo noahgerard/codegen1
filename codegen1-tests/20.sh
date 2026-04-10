@@ -20,7 +20,7 @@ trap "cleanup" EXIT SIGHUP SIGINT SIGQUIT SIGABRT SIGALRM SIGTERM
 
 cat <<EOF | ${cmd} > main.s
 function main # DO NOT CHANGE
-localVariables a b c d dummy fact # fact must be last for print
+localVariables a b c d dummy1 dummy2 dummy3 fact # fact must be last for print
 a := 5
 fact := 1
 b := 1
