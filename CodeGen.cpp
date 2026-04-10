@@ -130,20 +130,20 @@ public:
       cout << "\tidiv %rbx" << endl;
 
       // Move remainder to variable
-      cout << "\tmov\t%rdx, " << symtab[ctx->variable->getText()] << "(%rbp)"
+      cout << "\tmov %rdx, " << symtab[ctx->variable->getText()] << "(%rbp)"
            << endl;
       return;
     }
 
-    cout << "\tmov\t%rax, " << symtab[ctx->variable->getText()] << "(%rbp)"
+    cout << "\tmov %rax, " << symtab[ctx->variable->getText()] << "(%rbp)"
          << endl;
   }
 
   virtual void enterCall(SimpleIRParser::CallContext *ctx) override {
-    cout << "\tmov\t-72(%rbp), %rdi" << endl;
-    cout << "\tcall\tprint_int" << endl;
-    cout << "\tadd\t$0, %rsp" << endl;
-    cout << "\tmov\t%rax, -80(%rbp)" << endl;
+    cout << "\tmov -72(%rbp), %rdi" << endl;
+    cout << "\tcall print_int" << endl;
+    cout << "\tadd $0, %rsp" << endl;
+    cout << "\tmov %rax, -80(%rbp)" << endl;
   }
 
   virtual void enterLabel(SimpleIRParser::LabelContext *ctx) override {
