@@ -161,6 +161,8 @@ public:
     string operand_2 = operand_to_string(ctx->operand2);
     string jump_target = ctx->labelName->getText();
 
+    cout << "\t# jump to " << jump_target << " if " << operand_1
+         << ctx->operatorKind->getText() << operand_2 << endl;
     cout << "\tmov\t" << operand_1 << ", %rax" << endl;
     cout << "\tmov\t" << operand_2 << ", %rbx" << endl;
     cout << "\tcmp %rbx, %rax" << endl;
