@@ -156,7 +156,35 @@ public:
   }
 
   virtual void enterIfGoto(SimpleIRParser::IfGotoContext *ctx) override {
-    // TODO:
+    auto comp_type = ctx->operatorKind->getType();
+    string operand_1 = operand_to_string(ctx->operand1);
+    string operand_2 = operand_to_string(ctx->operand2);
+    string jump_target = ctx->labelName->getText();
+
+    cout << "\tmov\t" << operand_1 << ", %rax" << endl;
+    cout << "\tmov\t" << operand_2 << ", %rbx" << endl;
+    cout << "\tcmp %rbx, %rax" << endl;
+
+    switch (comp_type) {
+    case SimpleIRParser::EQ:
+      cout << "\tje\t" << jump_target << endl;
+      break;
+    case SimpleIRParser::NEQ:
+      cout << "\tjne\t" << jump_target << endl;
+      break;
+    case SimpleIRParser::LT:
+      cout << "\tjl\t" << jump_target << endl;
+      break;
+    case SimpleIRParser::LTE:
+      cout << "\tjle\t" << jump_target << endl;
+      break;
+    case SimpleIRParser::GT:
+      cout << "\tjg\t" << jump_target << endl;
+      break;
+    case SimpleIRParser::GTE:
+      cout << "\tjge\t" << jump_target << endl;
+      break;
+    }
   }
 
   virtual void
