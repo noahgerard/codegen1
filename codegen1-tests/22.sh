@@ -21,14 +21,14 @@ trap "cleanup" EXIT SIGHUP SIGINT SIGQUIT SIGABRT SIGALRM SIGTERM
 cat <<EOF | ${cmd} > main.s
 function main # DO NOT CHANGE
 localVariables a b c d result # result must be last for print
-base := 2
-exp := 5
+a := 2
+b := 5
 result := 1
-i := 0
+c := 0
 loop:
-if i >= exp goto after
-result := result * base
-i := i + 1
+if c >= b goto after
+result := result * a
+c := c + 1
 goto loop
 after:
 retval := call print_int result # DO NOT CHANGE
