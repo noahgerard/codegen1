@@ -119,6 +119,10 @@ public:
 
   virtual void
   enterDereference(SimpleIRParser::DereferenceContext *ctx) override {
+    cout << "\t# set " << ctx->variable->getText()
+         << " to value at memory address in " << ctx->operand->getText()
+         << endl;
+
     cout << "\tmov\t" << symtab[ctx->operand->getText()] << "(%rbp)"
          << ", %rax" << endl;
     cout << "\tmov\t(%rax), %rbx" << endl;
@@ -127,6 +131,9 @@ public:
   }
 
   virtual void enterReference(SimpleIRParser::ReferenceContext *ctx) override {
+    cout << "\t# set " << ctx->variable->getText() << " to "
+         << ctx->operand->getText() << " memory address" << endl;
+
     cout << "\tmov\t%rbp, %rax" << endl;
     cout << "\tadd\t$" << symtab[ctx->operand->getText()] << ", %rax" << endl;
     cout << "\tmov\t%rax, " << symtab[ctx->variable->getText()] << "(%rbp)"
@@ -135,9 +142,12 @@ public:
 
   virtual void enterAssignDereference(
       SimpleIRParser::AssignDereferenceContext *ctx) override {
-    cout << "\tmov\t" << symtab[ctx->operand->getText()] << "(%rbp)"
-         << ", %rax" << endl;
+    cout << "\t# store at memory address in " << ctx->variable->getText()
+         << " value of " << ctx->operand->getText() << endl;
+
     cout << "\tmov\t" << symtab[ctx->variable->getText()] << "(%rbp)"
+         << ", %rax" << endl;
+    cout << "\tmov\t" << symtab[ctx->operand->getText()] << "(%rbp)"
          << ", %rbx" << endl;
     cout << "\tmov\t%rbx, (%rax)" << endl;
   }

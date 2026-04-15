@@ -22,7 +22,6 @@ trap "cleanup" EXIT SIGHUP SIGINT SIGQUIT SIGABRT SIGALRM SIGTERM
 cat <<EOF | ${cmd} > main.s
 function main # DO NOT CHANGE
 localVariables a b c d e f g result retval # DO NOT CHANGE
-
 a := 4
 b := &a
 *b := 11
