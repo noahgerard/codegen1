@@ -118,12 +118,31 @@ public:
   virtual void enterIfGoto(SimpleIRParser::IfGotoContext *ctx) override {}
 
   virtual void
-  enterDereference(SimpleIRParser::DereferenceContext *ctx) override {}
+  enterDereference(SimpleIRParser::DereferenceContext *ctx) override {
+    cout << "\tmov\t" << symtab[ctx->operand->getText()] << "(%rbp)"
+         << ", %rax" << endl;
+    cout << "\tmov\t(%rax), %rbx" << endl;
+    cout << "\tmov\t%rbx, " << symtab[ctx->variable->getText()] << "(%rbp)"
+         << endl;
+  }
 
-  virtual void enterReference(SimpleIRParser::ReferenceContext *ctx) override {}
+  virtual void enterReference(SimpleIRParser::ReferenceContext *ctx) override {
+
+    cout << "\tmov\t%rbp, %rax" << endl;
+    cout << "\tadd\t" << symtab[ctx->operand->getText()] << "(%rbp)"
+         << ", %rax" << endl;
+    cout << "\tmov\t%rax, " << symtab[ctx->variable->getText()] << "(%rbp)"
+         << endl;
+  }
 
   virtual void enterAssignDereference(
-      SimpleIRParser::AssignDereferenceContext *ctx) override {}
+      SimpleIRParser::AssignDereferenceContext *ctx) override {
+    cout << "\tmov\t" << symtab[ctx->variable->getText()] << "(%rbp)"
+         << ", %rax" << endl;
+    cout << "\tmov\t" << symtab[ctx->operand->getText()] << "(%rbp)"
+         << ", %rbx" << endl;
+    cout << "\tmov\t%rbx, (%rax)" << endl;
+  }
 };
 
 int main(int argc, const char *argv[]) {
