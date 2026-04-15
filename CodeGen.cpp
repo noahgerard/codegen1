@@ -147,7 +147,7 @@ public:
 
     cout << "\tmov\t" << symtab[ctx->variable->getText()] << "(%rbp)"
          << ", %rax" << endl;
-    cout << "\tmov\t" << symtab[ctx->operand->getText()] << "(%rbp)"
+    cout << "\tmov\t" << operand_to_string(ctx->operand) << "(%rbp)"
          << ", %rbx" << endl;
     cout << "\tmov\t%rbx, (%rax)" << endl;
   }
