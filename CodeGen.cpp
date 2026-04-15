@@ -34,160 +34,35 @@ static string operand_to_string(antlr4::Token *token) {
 
 class CodeGen : public SimpleIRBaseListener {
 public:
-  virtual void enterUnit(SimpleIRParser::UnitContext *ctx) override {
-    // filename
-    cout << "\t.file \"" << filename << "\"" << endl;
-    cout << "\t.section .note.GNU-stack,\"\",@progbits" << endl;
-    cout << "\t.text" << endl;
-  }
+  virtual void enterUnit(SimpleIRParser::UnitContext *ctx) override {}
 
-  virtual void enterFunction(SimpleIRParser::FunctionContext *ctx) override {
-    cout << "\t.globl main" << endl;
-    cout << "\t.type main" << ", @function" << endl;
-    cout << "main:" << endl;
-    cout << "\t# prologue, update stack pointer" << endl;
-    cout << "\tpushq\t%rbp # save old base ponter" << endl;
-    cout << "\tmovq\t%rsp, %rbp # set new base pointer" << endl;
-    cout << "\tpush\t%rbx # %rbx is callee-saved" << endl;
-  }
+  virtual void enterFunction(SimpleIRParser::FunctionContext *ctx) override {}
 
-  virtual void enterEnd(SimpleIRParser::EndContext *ctx) override {
-    cout << "\t# epilogue" << endl;
-    cout << "\tadd\t$" << stackoffset << ", %rsp" << endl;
-    cout << "\tpop\t%rbx # restore %rbx" << endl;
-    cout << "\tpop\t%rbp # restore old base pointer" << endl;
-    cout << "\tret" << endl;
-  }
+  virtual void enterEnd(SimpleIRParser::EndContext *ctx) override {}
 
   virtual void
-  enterLocalVariables(SimpleIRParser::LocalVariablesContext *ctx) override {
-    auto variables = ctx->variables;
-    // Start 2 bytes after rbp
-    int starting_offset = 2;
-    for (int variable_i = 0; variable_i < variables.size(); variable_i++) {
-      string variable = variables[variable_i]->getText();
-      int offset = (starting_offset + variable_i) * bytewidth;
-      symtab[variable] = -1 * offset;
-    }
-    // compute size of the stack space needed
-    int stackspace = variables.size() * bytewidth;
-    // ceiling to 8 bytes
-    stackoffset = std::ceil(stackspace / 8) * 8;
-    // align to 16 bytes, accounting for rbx being pushed by adding 8
-    stackoffset += (stackoffset + 8) % 16;
-    // emit the subtraction to allocate stack space
-    cout << "\t# allocate stack space for locals" << endl;
-    cout << "\tsub\t$" << stackoffset << ", %rsp" << endl;
-  }
+  enterLocalVariables(SimpleIRParser::LocalVariablesContext *ctx) override {}
 
   virtual void
-  enterParameters(SimpleIRParser::ParametersContext *ctx) override {
-    // empty for template.ir
-  }
+  enterParameters(SimpleIRParser::ParametersContext *ctx) override {}
 
   virtual void
-  enterReturnStatement(SimpleIRParser::ReturnStatementContext *ctx) override {
-    cout << "\t# set return value" << endl;
-    cout << "\tmov\t$0, %rax" << endl;
-  }
+  enterReturnStatement(SimpleIRParser::ReturnStatementContext *ctx) override {}
 
   virtual void enterStatement(SimpleIRParser::StatementContext *ctx) override {}
 
-  virtual void enterAssign(SimpleIRParser::AssignContext *ctx) override {
-    string operand = operand_to_string(ctx->operand);
-    cout << "\t# assign " << ctx->operand->getText() << " to "
-         << ctx->variable->getText() << endl;
-    cout << "\tmov\t" << operand << ", %rax" << endl;
-    cout << "\tmov\t%rax, " << symtab[ctx->variable->getText()] << "(%rbp)"
-         << endl;
-  }
+  virtual void enterAssign(SimpleIRParser::AssignContext *ctx) override {}
 
-  virtual void enterOperation(SimpleIRParser::OperationContext *ctx) override {
-    auto op_type = ctx->operatorKind->getType();
+  virtual void enterOperation(SimpleIRParser::OperationContext *ctx) override {}
 
-    string operand_1 = operand_to_string(ctx->operand1);
-    string operand_2 = operand_to_string(ctx->operand2);
+  virtual void enterCall(SimpleIRParser::CallContext *ctx) override {}
 
-    cout << "\tmov\t" << operand_1 << ", %rax" << endl;
-    cout << "\tmov\t" << operand_2 << ", %rbx" << endl;
-
-    switch (op_type) {
-    case SimpleIRParser::PLUS:
-      cout << "\tadd %rbx, %rax" << endl;
-      break;
-    case SimpleIRParser::MINUS:
-      cout << "\tsub %rbx, %rax" << endl;
-      break;
-    case SimpleIRParser::STAR:
-      cout << "\timul %rbx, %rax" << endl;
-      break;
-    case SimpleIRParser::SLASH:
-      cout << "\tcdq" << endl;
-      cout << "\tidiv %rbx" << endl;
-      break;
-    case SimpleIRParser::PERCENT:
-      cout << "\tcdq" << endl;
-      cout << "\tidiv %rbx" << endl;
-
-      // Move remainder to variable
-      cout << "\tmov %rdx, " << symtab[ctx->variable->getText()] << "(%rbp)"
-           << endl;
-      return;
-    }
-
-    cout << "\tmov %rax, " << symtab[ctx->variable->getText()] << "(%rbp)"
-         << endl;
-  }
-
-  virtual void enterCall(SimpleIRParser::CallContext *ctx) override {
-    cout << "\tmov -72(%rbp), %rdi" << endl;
-    cout << "\tcall print_int" << endl;
-    cout << "\tadd $0, %rsp" << endl;
-    cout << "\tmov %rax, -80(%rbp)" << endl;
-  }
-
-  virtual void enterLabel(SimpleIRParser::LabelContext *ctx) override {
-    cout << ctx->labelName->getText() << ":" << endl;
-  }
+  virtual void enterLabel(SimpleIRParser::LabelContext *ctx) override {}
 
   virtual void
-  enterGotoStatement(SimpleIRParser::GotoStatementContext *ctx) override {
-    cout << "\tjmp\t" << ctx->labelName->getText() << endl;
-  }
+  enterGotoStatement(SimpleIRParser::GotoStatementContext *ctx) override {}
 
-  virtual void enterIfGoto(SimpleIRParser::IfGotoContext *ctx) override {
-    auto comp_type = ctx->operatorKind->getType();
-    string operand_1 = operand_to_string(ctx->operand1);
-    string operand_2 = operand_to_string(ctx->operand2);
-    string jump_target = ctx->labelName->getText();
-
-    cout << "\t# jump to " << jump_target << " if " << operand_1
-         << ctx->operatorKind->getText() << operand_2 << endl;
-    cout << "\tmov\t" << operand_1 << ", %rax" << endl;
-    cout << "\tmov\t" << operand_2 << ", %rbx" << endl;
-    cout << "\tcmp %rbx, %rax" << endl;
-
-    switch (comp_type) {
-    case SimpleIRParser::EQ:
-      cout << "\tje\t" << jump_target << endl;
-      break;
-    case SimpleIRParser::NEQ:
-      cout << "\tjne\t" << jump_target << endl;
-      break;
-    case SimpleIRParser::LT:
-      cout << "\tjl\t" << jump_target << endl;
-      break;
-    case SimpleIRParser::LTE:
-      cout << "\tjle\t" << jump_target << endl;
-      break;
-    case SimpleIRParser::GT:
-      cout << "\tjg\t" << jump_target << endl;
-      break;
-    case SimpleIRParser::GTE:
-      cout << "\tjge\t" << jump_target << endl;
-      break;
-    }
-  }
+  virtual void enterIfGoto(SimpleIRParser::IfGotoContext *ctx) override {}
 
   virtual void
   enterDereference(SimpleIRParser::DereferenceContext *ctx) override {}
