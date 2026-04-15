@@ -129,8 +129,7 @@ public:
   virtual void enterReference(SimpleIRParser::ReferenceContext *ctx) override {
 
     cout << "\tmov\t%rbp, %rax" << endl;
-    cout << "\tadd\t" << symtab[ctx->operand->getText()] << "(%rbp)"
-         << ", %rax" << endl;
+    cout << "\tadd\t" << symtab[ctx->operand->getText()] << ", %rax" << endl;
     cout << "\tmov\t%rax, " << symtab[ctx->variable->getText()] << "(%rbp)"
          << endl;
   }
