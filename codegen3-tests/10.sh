@@ -1,0 +1,52 @@
+#!/bin/bash
+
+echo "${0}"
+
+cmd=${1}
+
+initialize () {
+  mkdir testdir
+  cd testdir
+}
+
+cleanup () {
+  cd ../
+  rm -rf testdir
+}
+
+initialize
+trap "cleanup" EXIT SIGHUP SIGINT SIGQUIT SIGABRT SIGALRM SIGTERM
+
+cat <<EOF | ${cmd} > main.s
+function main
+localVariables retval a b
+a := 8
+b := 11
+retval := call callee a b
+return retval
+end function
+EOF
+
+cat <<EOF | ${cmd} > callee.s
+function callee
+localVariables p1 p2 var
+parameters p1 p2
+var := p2
+return var
+end function
+EOF
+
+correctexit=11
+
+gcc -o main main.s callee.s
+
+./main
+exitcode=$?
+
+if [[ $exitcode -eq $correctexit ]]; then
+	echo "success"
+	exit 0
+else
+	echo "failure"
+	exit 1
+fi
