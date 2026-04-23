@@ -41,9 +41,23 @@ public:
     cout << "\t.text" << endl;
   }
 
-  virtual void enterFunction(SimpleIRParser::FunctionContext *ctx) override {}
+  virtual void enterFunction(SimpleIRParser::FunctionContext *ctx) override {
+    cout << "\t.globl " << ctx->functionName << endl;
+    cout << "\t.type " << ctx->functionName << endl << ", @function";
+    cout << ctx->functionName << ":" << endl;
+    cout << "# prologue" << endl;
+    cout << "\tpushq %rbp" << endl;
+    cout << "\tmovq $rsp, %rbp" << endl;
+    cout << "\tpushq %rbx" << endl;
+  }
 
-  virtual void enterEnd(SimpleIRParser::EndContext *ctx) override {}
+  virtual void enterEnd(SimpleIRParser::EndContext *ctx) override {
+    cout << "# epilogue" << endl;
+    cout << "\tadd" << "\t $" << stackoffset << ", %rsp" << endl;
+    cout << "\tpop %rbx" << endl;
+    cout << "\tpop %rbp" << endl;
+    cout << "\tret" << endl;
+  }
 
   virtual void
   enterLocalVariables(SimpleIRParser::LocalVariablesContext *ctx) override {
