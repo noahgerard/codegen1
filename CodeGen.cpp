@@ -82,7 +82,23 @@ public:
   }
 
   virtual void
-  enterParameters(SimpleIRParser::ParametersContext *ctx) override {}
+  enterParameters(SimpleIRParser::ParametersContext *ctx) override {
+    auto formals = ctx->formals;
+    for (int formal_i = 0; formal_i < formals.size(); formal_i++) {
+      int base_ptr_offset = (formal_i + 3) * -8;
+      string parameter = formals[formal_i]->getText();
+
+      if (formal_i > 5) {
+        parameter = "%rax";
+        int stack_offset = (formal_i - 4) * 8;
+
+        cout << "\tmov\t" << stack_offset << "($rbp), %rax" << endl;
+      }
+
+      cout << "\tmov\t" << parameter << ", " << base_ptr_offset << "($rbp)"
+           << endl;
+    }
+  }
 
   virtual void
   enterReturnStatement(SimpleIRParser::ReturnStatementContext *ctx) override {}
