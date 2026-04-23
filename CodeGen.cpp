@@ -41,23 +41,9 @@ public:
     cout << "\t.text" << endl;
   }
 
-  virtual void enterFunction(SimpleIRParser::FunctionContext *ctx) override {
-    cout << "\t.globl main" << endl;
-    cout << "\t.type main" << ", @function" << endl;
-    cout << "main:" << endl;
-    cout << "\t# prologue, update stack pointer" << endl;
-    cout << "\tpushq\t%rbp # save old base ponter" << endl;
-    cout << "\tmovq\t%rsp, %rbp # set new base pointer" << endl;
-    cout << "\tpush\t%rbx # %rbx is callee-saved" << endl;
-  }
+  virtual void enterFunction(SimpleIRParser::FunctionContext *ctx) override {}
 
-  virtual void enterEnd(SimpleIRParser::EndContext *ctx) override {
-    cout << "\t# epilogue" << endl;
-    cout << "\tadd\t$" << stackoffset << ", %rsp" << endl;
-    cout << "\tpop\t%rbx # restore %rbx" << endl;
-    cout << "\tpop\t%rbp # restore old base pointer" << endl;
-    cout << "\tret" << endl;
-  }
+  virtual void enterEnd(SimpleIRParser::EndContext *ctx) override {}
 
   virtual void
   enterLocalVariables(SimpleIRParser::LocalVariablesContext *ctx) override {
@@ -85,10 +71,7 @@ public:
   enterParameters(SimpleIRParser::ParametersContext *ctx) override {}
 
   virtual void
-  enterReturnStatement(SimpleIRParser::ReturnStatementContext *ctx) override {
-    cout << "\t# set return value" << endl;
-    cout << "\tmov\t$0, %rax" << endl;
-  }
+  enterReturnStatement(SimpleIRParser::ReturnStatementContext *ctx) override {}
 
   virtual void enterStatement(SimpleIRParser::StatementContext *ctx) override {}
 
@@ -103,12 +86,7 @@ public:
 
   virtual void enterOperation(SimpleIRParser::OperationContext *ctx) override {}
 
-  virtual void enterCall(SimpleIRParser::CallContext *ctx) override {
-    cout << "\tmov\t-72(%rbp), %rdi" << endl;
-    cout << "\tcall\tprint_int" << endl;
-    cout << "\tadd\t$0, %rsp" << endl;
-    cout << "\tmov\t%rax, -80(%rbp)" << endl;
-  }
+  virtual void enterCall(SimpleIRParser::CallContext *ctx) override {}
 
   virtual void enterLabel(SimpleIRParser::LabelContext *ctx) override {}
 
@@ -118,38 +96,12 @@ public:
   virtual void enterIfGoto(SimpleIRParser::IfGotoContext *ctx) override {}
 
   virtual void
-  enterDereference(SimpleIRParser::DereferenceContext *ctx) override {
-    cout << "\t# set " << ctx->variable->getText()
-         << " to value at memory address in " << ctx->operand->getText()
-         << endl;
+  enterDereference(SimpleIRParser::DereferenceContext *ctx) override {}
 
-    cout << "\tmov\t" << symtab[ctx->operand->getText()] << "(%rbp)"
-         << ", %rax" << endl;
-    cout << "\tmov\t(%rax), %rbx" << endl;
-    cout << "\tmov\t%rbx, " << symtab[ctx->variable->getText()] << "(%rbp)"
-         << endl;
-  }
-
-  virtual void enterReference(SimpleIRParser::ReferenceContext *ctx) override {
-    cout << "\t# set " << ctx->variable->getText() << " to "
-         << ctx->operand->getText() << " memory address" << endl;
-
-    cout << "\tmov\t%rbp, %rax" << endl;
-    cout << "\tadd\t$" << symtab[ctx->operand->getText()] << ", %rax" << endl;
-    cout << "\tmov\t%rax, " << symtab[ctx->variable->getText()] << "(%rbp)"
-         << endl;
-  }
+  virtual void enterReference(SimpleIRParser::ReferenceContext *ctx) override {}
 
   virtual void enterAssignDereference(
-      SimpleIRParser::AssignDereferenceContext *ctx) override {
-    cout << "\t# store at memory address in " << ctx->variable->getText()
-         << " value of " << ctx->operand->getText() << endl;
-
-    cout << "\tmov\t" << symtab[ctx->variable->getText()] << "(%rbp)"
-         << ", %rax" << endl;
-    cout << "\tmov\t" << operand_to_string(ctx->operand) << ", %rbx" << endl;
-    cout << "\tmov\t%rbx, (%rax)" << endl;
-  }
+      SimpleIRParser::AssignDereferenceContext *ctx) override {}
 };
 
 int main(int argc, const char *argv[]) {
