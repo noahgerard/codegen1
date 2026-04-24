@@ -103,7 +103,7 @@ public:
   virtual void
   enterReturnStatement(SimpleIRParser::ReturnStatementContext *ctx) override {
     cout << "\t# set return value" << endl;
-    cout << "\tmov\t" << operand_to_string(ctx->operand) << ", %rax" << endl;
+    cout << "\tmov\t " << operand_to_string(ctx->operand) << ", %rax" << endl;
   }
 
   virtual void enterStatement(SimpleIRParser::StatementContext *ctx) override {}
@@ -129,11 +129,11 @@ public:
     int stack_arg_count = 0;
     for (int actual_i = actuals.size() - 1; actual_i >= 0; actual_i--) {
       if ((actuals.size() - 1) - actual_i < 5) {
-        cout << "\tmov\t" << operand_to_string(actuals[actual_i]) << ", "
+        cout << "\tmov\t " << operand_to_string(actuals[actual_i]) << ", "
              << registers[actual_i] << endl;
       } else {
         stack_arg_count += 1;
-        cout << "\tpush\t" << operand_to_string(actuals[actual_i]) << endl;
+        cout << "\tpush\t " << operand_to_string(actuals[actual_i]) << endl;
       }
     }
 
