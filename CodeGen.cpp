@@ -47,7 +47,7 @@ public:
     cout << ctx->functionName->getText() << ":" << endl;
     cout << "\t# prologue" << endl;
     cout << "\tpushq %rbp" << endl;
-    cout << "\tmovq $rsp, %rbp" << endl;
+    cout << "\tmovq %rsp, %rbp" << endl;
     cout << "\tpushq %rbx" << endl;
   }
 
