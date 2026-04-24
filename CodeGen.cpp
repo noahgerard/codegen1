@@ -133,7 +133,7 @@ public:
     for (int i = total_arguments - 1; i >= 0; i--) {
       if (i < 6) {
         cout << "\tmov\t " << operand_to_string(actuals[i]) << ", "
-             << registers[i] << endl;
+             << registers[5 - i] << endl;
       } else {
         cout << "\tpush\t " << operand_to_string(actuals[i]) << endl;
       }
