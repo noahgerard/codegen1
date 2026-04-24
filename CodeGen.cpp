@@ -132,7 +132,7 @@ public:
 
     for (int i = total_arguments; i > total_arguments - 6; i--) {
       cout << "\tmov\t " << operand_to_string(actuals[i]) << ", "
-           << registers[i] << endl;
+           << registers[total_arguments - i] << endl;
     }
 
     for (int i = 6; i < total_arguments; i--) {
