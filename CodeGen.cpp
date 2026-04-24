@@ -135,7 +135,7 @@ public:
     }
 
     // # make the call
-    cout << "\tcall\t" << ctx->functionName << endl;
+    cout << "\tcall\t " << ctx->functionName->getText() << endl;
 
     // # restore the stack pointer
     cout << "\tadd	$16, %rsp" << endl;
