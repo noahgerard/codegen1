@@ -126,11 +126,13 @@ public:
                                              "%rcx", "%r8",  "%r9"};
     // pass the remaining arguments via the stack
     auto actuals = ctx->actuals;
+    int stack_arg_count = 0;
     for (int actual_i = actuals.size() - 1; actual_i >= 0; actual_i--) {
       if ((actuals.size() - 1) - actual_i < 5) {
         cout << "\tmov\t" << operand_to_string(actuals[actual_i]) << ", "
              << registers[actual_i] << endl;
       } else {
+        stack_arg_count += 1;
         cout << "\tpush\t" << operand_to_string(actuals[actual_i]) << endl;
       }
     }
@@ -138,8 +140,9 @@ public:
     // # make the call
     cout << "\tcall\t " << ctx->functionName->getText() << endl;
 
-    // # restore the stack pointer
-    cout << "\tadd	$16, %rsp" << endl;
+    if (stack_arg_count > 0) { // # restore the stack pointer
+      cout << "\tadd $" << stack_arg_count * 8 << ", %rsp" << endl;
+    }
 
     // # save the return value
     cout << "\tmov %rax, " << operand_to_string(ctx->variable) << endl;
