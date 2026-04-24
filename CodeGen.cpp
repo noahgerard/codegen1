@@ -92,10 +92,10 @@ public:
         parameter = "%rax";
         int stack_offset = (formal_i - 4) * 8;
 
-        cout << "\tmov\t" << stack_offset << "($rbp), %rax" << endl;
+        cout << "\tmov\t" << stack_offset << "(%rbp), %rax" << endl;
       }
 
-      cout << "\tmov\t" << parameter << ", " << base_ptr_offset << "($rbp)"
+      cout << "\tmov\t" << parameter << ", " << base_ptr_offset << "(%rbp)"
            << endl;
     }
   }
