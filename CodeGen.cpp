@@ -86,7 +86,7 @@ public:
     auto formals = ctx->formals;
     for (int formal_i = 0; formal_i < formals.size(); formal_i++) {
       int base_ptr_offset = (formal_i + 3) * -8;
-      string parameter = formals[formal_i]->getText();
+      string parameter = operand_to_string(formals[formal_i]);
 
       if (formal_i > 5) {
         parameter = "%rax";
