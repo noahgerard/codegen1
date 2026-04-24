@@ -126,17 +126,17 @@ public:
   virtual void enterCall(SimpleIRParser::CallContext *ctx) override {
     cout << "\t# calling " << ctx->functionName->getText() << endl;
 
-    // pass the remaining arguments via the stack
     auto actuals = ctx->actuals;
-    int stack_arg_count = 0;
-    for (int actual_i = actuals.size() - 1; actual_i >= 0; actual_i--) {
-      if ((actuals.size() - 1) - actual_i < 5) {
-        cout << "\tmov\t " << operand_to_string(actuals[actual_i]) << ", "
-             << registers[actual_i] << endl;
-      } else {
-        stack_arg_count += 1;
-        cout << "\tpush\t " << operand_to_string(actuals[actual_i]) << endl;
-      }
+    int total_arguments = actuals.size() - 1;
+    int stack_arg_count = total_arguments > 6 ? total_arguments - 6 : 0;
+
+    for (int i = total_arguments; i > total_arguments - 6; i--) {
+      cout << "\tmov\t " << operand_to_string(actuals[i]) << ", "
+           << registers[i] << endl;
+    }
+
+    for (int i = 6; i < total_arguments; i--) {
+      cout << "\tpush\t " << operand_to_string(actuals[i]) << endl;
     }
 
     // # make the call
