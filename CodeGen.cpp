@@ -120,7 +120,25 @@ public:
 
   virtual void enterOperation(SimpleIRParser::OperationContext *ctx) override {}
 
-  virtual void enterCall(SimpleIRParser::CallContext *ctx) override {}
+  virtual void enterCall(SimpleIRParser::CallContext *ctx) override {
+    // pass the remaining arguments via the stack
+    auto actuals = ctx->actuals;
+    for (int actual_i = actuals.size() - 1; actual_i >= 0; actual_i--) {
+      int offset = (actual_i + 5) * 8;
+      cout << "\tmov\t" << offset << "(%" << actuals[actual_i]->getText() << ")"
+           << endl;
+    }
+
+    // pass the first size parameters via the pre-defined set of registers
+    // push	-88(%rbp)
+    // push	-96(%rbp)
+    // # make the call
+    // call	paramtest
+    // # restore the stack pointer
+    // add	$16, %rsp
+    // # save the return value
+    // mov	%rax, -32(%rbp)
+  }
 
   virtual void enterLabel(SimpleIRParser::LabelContext *ctx) override {}
 
