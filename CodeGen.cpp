@@ -42,9 +42,9 @@ public:
   }
 
   virtual void enterFunction(SimpleIRParser::FunctionContext *ctx) override {
-    cout << "\t.globl " << ctx->functionName << endl;
-    cout << "\t.type " << ctx->functionName << endl << ", @function";
-    cout << ctx->functionName << ":" << endl;
+    cout << "\t.globl " << ctx->functionName->getText() << endl;
+    cout << "\t.type " << ctx->functionName->getText() << endl << ", @function";
+    cout << ctx->functionName->getText() << ":" << endl;
     cout << "# prologue" << endl;
     cout << "\tpushq %rbp" << endl;
     cout << "\tmovq $rsp, %rbp" << endl;
