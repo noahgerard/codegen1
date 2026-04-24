@@ -121,23 +121,29 @@ public:
   virtual void enterOperation(SimpleIRParser::OperationContext *ctx) override {}
 
   virtual void enterCall(SimpleIRParser::CallContext *ctx) override {
+    static const vector<string> registers = {"%rdi", "%rsi", "%rdx",
+                                             "%rcx", "%r8",  "%r9"};
     // pass the remaining arguments via the stack
     auto actuals = ctx->actuals;
     for (int actual_i = actuals.size() - 1; actual_i >= 0; actual_i--) {
-      int offset = (actual_i + 5) * 8;
-      cout << "\tmov\t" << offset << "(%" << actuals[actual_i]->getText() << ")"
-           << endl;
+      int offset = (actual_i + 5) * -8;
+
+      if ((actuals.size() - 1) - actual_i > 5) {
+        cout << "\tmov\t" << operand_to_string(actuals[actual_i]) << offset
+             << ", " << registers[actual_i] << endl;
+      } else {
+        cout << "\tpush\t" << operand_to_string(actuals[actual_i]) << endl;
+      }
     }
 
-    // pass the first size parameters via the pre-defined set of registers
-    // push	-88(%rbp)
-    // push	-96(%rbp)
     // # make the call
-    // call	paramtest
+    cout << "\tcall\t" << ctx->functionName << endl;
+
     // # restore the stack pointer
-    // add	$16, %rsp
+    cout << "\tadd	$16, %rsp" << endl;
+
     // # save the return value
-    // mov	%rax, -32(%rbp)
+    cout << "\tmov %rax, " << operand_to_string(ctx->variable) << endl;
   }
 
   virtual void enterLabel(SimpleIRParser::LabelContext *ctx) override {}
