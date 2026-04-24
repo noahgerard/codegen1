@@ -85,7 +85,7 @@ public:
   enterParameters(SimpleIRParser::ParametersContext *ctx) override {
     auto formals = ctx->formals;
     for (int formal_i = 0; formal_i < formals.size(); formal_i++) {
-      int base_ptr_offset = (formal_i + 3) * -8;
+      int base_ptr_offset = (formal_i + 2) * -8;
 
       if (formal_i > 5) {
         int stack_offset = (formal_i - 4) * 8;
