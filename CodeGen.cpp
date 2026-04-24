@@ -120,6 +120,8 @@ public:
   virtual void enterOperation(SimpleIRParser::OperationContext *ctx) override {}
 
   virtual void enterCall(SimpleIRParser::CallContext *ctx) override {
+    cout << "\t# calling " << ctx->functionName->getText() << endl;
+
     static const vector<string> registers = {"%rdi", "%rsi", "%rdx",
                                              "%rcx", "%r8",  "%r9"};
     // pass the remaining arguments via the stack
