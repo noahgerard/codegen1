@@ -128,9 +128,9 @@ public:
 
     auto actuals = ctx->actuals;
     int total_arguments = actuals.size();
-    int stack_arg_count = total_arguments > 6 ? total_arguments - 6 : 0;
+    int stack_arg_count = total_arguments > 5 ? total_arguments - 5 : 0;
 
-    for (int i = total_arguments - 1; i >= total_arguments - 6; i--) {
+    for (int i = total_arguments - 1; i >= total_arguments - 5; i--) {
       cout << "\tmov\t " << operand_to_string(actuals[i]) << ", "
            << registers[total_arguments - i] << endl;
     }
