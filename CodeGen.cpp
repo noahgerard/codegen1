@@ -86,22 +86,21 @@ public:
     auto formals = ctx->formals;
     for (int formal_i = 0; formal_i < formals.size(); formal_i++) {
       int base_ptr_offset = (formal_i + 3) * -8;
-      string parameter = operand_to_string(formals[formal_i]);
 
       if (formal_i > 5) {
-        parameter = "%rax";
         int stack_offset = (formal_i - 4) * 8;
 
         cout << "\t# move stack parameter " << formals[formal_i]->getText()
              << " to local variable" << endl;
         cout << "\tmov\t" << stack_offset << "(%rbp), %rax" << endl;
+        cout << "\tmov\t %rax, " << base_ptr_offset << "(%rbp)" << endl;
       } else {
         cout << "\t# move register parameter " << formals[formal_i]->getText()
              << " to local variable" << endl;
-      }
 
-      cout << "\tmov\t" << parameter << ", " << base_ptr_offset << "(%rbp)"
-           << endl;
+        cout << "\tmov\t" << registers[formal_i] << ", " << base_ptr_offset
+             << "(%rbp)" << endl;
+      }
     }
   }
 
@@ -127,8 +126,6 @@ public:
   virtual void enterCall(SimpleIRParser::CallContext *ctx) override {
     cout << "\t# calling " << ctx->functionName->getText() << endl;
 
-    static const vector<string> registers = {"%rdi", "%rsi", "%rdx",
-                                             "%rcx", "%r8",  "%r9"};
     // pass the remaining arguments via the stack
     auto actuals = ctx->actuals;
     int stack_arg_count = 0;
