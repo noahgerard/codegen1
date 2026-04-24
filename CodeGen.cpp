@@ -98,8 +98,8 @@ public:
         cout << "\t# move register parameter " << formals[formal_i]->getText()
              << " to local variable" << endl;
 
-        cout << "\tmov\t" << registers[formal_i] << ", " << base_ptr_offset
-             << "(%rbp)" << endl;
+        cout << "\tmov\t" << registers[formal_i] << ", "
+             << operand_to_string(formals[formal_i]) << endl;
       }
     }
   }
