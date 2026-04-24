@@ -135,7 +135,7 @@ public:
            << registers[total_arguments - i] << endl;
     }
 
-    for (int i = stack_arg_count; i >= 0; i--) {
+    for (int i = stack_arg_count; i > 0; i--) {
       cout << "\tpush\t " << operand_to_string(actuals[i]) << endl;
     }
 
