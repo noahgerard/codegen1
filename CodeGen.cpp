@@ -103,8 +103,7 @@ public:
   virtual void
   enterReturnStatement(SimpleIRParser::ReturnStatementContext *ctx) override {
     cout << "\t# set return value" << endl;
-    cout << "\tmov\t" << operand_to_string(ctx->operand) << ", " << ", %rax"
-         << endl;
+    cout << "\tmov\t" << operand_to_string(ctx->operand) << ", %rax" << endl;
   }
 
   virtual void enterStatement(SimpleIRParser::StatementContext *ctx) override {}
