@@ -136,7 +136,7 @@ public:
     }
 
     for (int i = stack_arg_count; i > 0; i--) {
-      cout << "\tpush\t " << operand_to_string(actuals[i]) << endl;
+      cout << "\tpush\t " << operand_to_string(actuals[i + 1]) << endl;
     }
 
     // # make the call
