@@ -92,7 +92,12 @@ public:
         parameter = "%rax";
         int stack_offset = (formal_i - 4) * 8;
 
+        cout << "\t# move stack parameter " << formals[formal_i]->getText()
+             << " to local variable" << endl;
         cout << "\tmov\t" << stack_offset << "(%rbp), %rax" << endl;
+      } else {
+        cout << "\t# move register parameter " << formals[formal_i]->getText()
+             << " to local variable" << endl;
       }
 
       cout << "\tmov\t" << parameter << ", " << base_ptr_offset << "(%rbp)"
