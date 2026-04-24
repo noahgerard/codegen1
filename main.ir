@@ -1,9 +1,5 @@
-function main # DO NOT CHANGE
-localVariables a b c d e f g result retval # DO NOT CHANGE
-a := 4
-b := &a
-*b := 11
-result := a
-retval := call print_int result # DO NOT CHANGE
-return 0 # DO NOT CHANGE
-end function # DO NOT CHANGE
+function callee
+localVariables p1
+parameters p1
+return p1
+end function
