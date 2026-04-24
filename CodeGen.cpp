@@ -130,13 +130,13 @@ public:
     int total_arguments = actuals.size();
     int stack_arg_count = total_arguments > 6 ? total_arguments - 6 : 0;
 
-    for (int i = total_arguments - 1; i >= total_arguments - 6; i--) {
+    for (int i = 0; i < total_arguments % 6; i++) {
       cout << "\tmov\t " << operand_to_string(actuals[i]) << ", "
-           << registers[total_arguments - i - 1] << endl;
+           << registers[i] << endl;
     }
 
-    for (int i = stack_arg_count; i > 0; i--) {
-      cout << "\tpush\t " << operand_to_string(actuals[i + 1]) << endl;
+    for (int i = 6; i < total_arguments; i++) {
+      cout << "\tpush\t " << operand_to_string(actuals[i]) << endl;
     }
 
     // # make the call
