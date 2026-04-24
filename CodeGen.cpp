@@ -126,11 +126,9 @@ public:
     // pass the remaining arguments via the stack
     auto actuals = ctx->actuals;
     for (int actual_i = actuals.size() - 1; actual_i >= 0; actual_i--) {
-      int offset = (actual_i + 5) * -8;
-
-      if ((actuals.size() - 1) - actual_i > 5) {
-        cout << "\tmov\t" << operand_to_string(actuals[actual_i]) << offset
-             << ", " << registers[actual_i] << endl;
+      if ((actuals.size() - 1) - actual_i < 5) {
+        cout << "\tmov\t" << operand_to_string(actuals[actual_i]) << ", "
+             << registers[actual_i] << endl;
       } else {
         cout << "\tpush\t" << operand_to_string(actuals[actual_i]) << endl;
       }
